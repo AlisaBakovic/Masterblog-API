@@ -18,13 +18,17 @@ def get_posts():
     sort_field = request.args.get('sort')
     direction = request.args.get('direction', 'asc')
 
-    reverse = False
-    if direction == 'desc':
-        reverse = True
-    elif direction != 'asc':
-        return jsonify({"error": "Invalid direction"}), 400
+    if sort_field:
+        if sort_field not in ['title', 'content']:
+            return jsonify({"error": "Invalid sort field"}), 400
 
-    results.sort(key=lambda post: post[sort_field].lower(), reverse=reverse)
+        reverse = False
+        if direction == 'desc':
+            reverse = True
+        elif direction != 'asc':
+            return jsonify({"error": "Invalid direction"}), 400
+
+        results.sort(key=lambda post: post[sort_field].lower(), reverse=reverse)
 
     return jsonify(results), 200
 
